@@ -16,6 +16,8 @@
 
 package org.springframework.boot.autoconfigure.cassandra;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.SocketOptions;
@@ -52,7 +54,7 @@ public class CassandraAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public Cluster cluster() {
+	public Cluster cluster() throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		CassandraProperties properties = this.properties;
 		Cluster.Builder builder = Cluster.builder()
 				.withClusterName(properties.getClusterName())
@@ -64,22 +66,27 @@ public class CassandraAutoConfiguration {
 			builder.withCompression(properties.getCompression());
 		}
 		if (properties.getLoadBalancingPolicy() != null) {
-			LoadBalancingPolicy policy = instantiate(properties.getLoadBalancingPolicy());
+			LoadBalancingPolicy policy = properties.getLoadBalancingPolicy();
 			builder.withLoadBalancingPolicy(policy);
 		}
 		builder.withQueryOptions(getQueryOptions());
 		if (properties.getReconnectionPolicy() != null) {
-			ReconnectionPolicy policy = instantiate(properties.getReconnectionPolicy());
+			ReconnectionPolicy policy = properties.getReconnectionPolicy();
 			builder.withReconnectionPolicy(policy);
 		}
 		if (properties.getRetryPolicy() != null) {
-			RetryPolicy policy = instantiate(properties.getRetryPolicy());
+			RetryPolicy policy = properties.getRetryPolicy();
 			builder.withRetryPolicy(policy);
 		}
 		builder.withSocketOptions(getSocketOptions());
 		if (properties.isSsl()) {
 			builder.withSSL();
 		}
+		if (properties.getUser() != null && properties.getPassword() !=null ) {
+			builder.withCredentials(properties.getUser(), properties.getPassword());
+		}
+		
+		
 		String points = properties.getContactPoints();
 		builder.addContactPoints(StringUtils.commaDelimitedListToStringArray(points));
 		return builder.build();
