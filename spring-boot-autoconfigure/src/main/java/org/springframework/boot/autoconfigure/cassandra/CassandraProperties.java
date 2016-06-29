@@ -43,7 +43,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Julien Dubois
  * @author Phillip Webb
- * @author Alexander Dejanovski 
+ * @author Alexander Dejanovski
  * @since 1.3.0
  */
 @ConfigurationProperties(prefix = "spring.data.cassandra")
@@ -131,11 +131,6 @@ public class CassandraProperties {
 
 	private String user = "";
 
-	/**
-	 * password for authentication.
-	 */
-	private String password = "";
-
 	public String getKeyspaceName() {
 		return this.keyspaceName;
 	}
@@ -174,14 +169,6 @@ public class CassandraProperties {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getPassword() {
-		return this.password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Compression getCompression() {

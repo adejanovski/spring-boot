@@ -82,11 +82,10 @@ public class CassandraAutoConfiguration {
 		if (properties.isSsl()) {
 			builder.withSSL();
 		}
-		if (properties.getUser() != null && properties.getPassword() !=null ) {
+		if (properties.getUser() != null && properties.getPassword() != null) {
 			builder.withCredentials(properties.getUser(), properties.getPassword());
 		}
-		
-		
+
 		String points = properties.getContactPoints();
 		builder.addContactPoints(StringUtils.commaDelimitedListToStringArray(points));
 		return builder.build();
